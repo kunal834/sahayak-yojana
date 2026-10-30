@@ -54,6 +54,8 @@ GLOSSARY = {
     "कार्ड": "card", "जाति": "caste certificate", "प्रीमियम": "premium", "दुर्घटना": "accident",
     "मृत्यु": "death", "जीवन": "life", "बचत": "savings deposit", "जमा": "deposit",
     "हेल्पलाइन": "helpline", "कैसे": "how apply", "चाहिए": "required",
+    "daughter": "girl child", "daughters": "girl child", "cart": "street vendor vending",
+    "hawker": "street vendor vending", "thela": "street vendor", "rehri": "street vendor",
     "kitna": "amount rs", "kitni": "amount rs", "milta": "benefits", "milega": "benefits",
     "kaise": "how apply", "chahiye": "required", "kaun": "eligible", "kagaj": "documents required",
 }
@@ -74,7 +76,7 @@ SCHEME_ALIASES = {
     "central-sector-scholarship": ["central sector", "csss", "केंद्रीय क्षेत्र", "merit scholarship"],
     "pm-mudra": ["mudra", "मुद्रा", "shishu", "kishore", "tarun"],
     "pm-svanidhi": ["svanidhi", "swanidhi", "स्वनिधि", "street vendor"],
-    "pmmvy": ["matru vandana", "pmmvy", "मातृ वंदना", "maternity"],
+    "pmmvy": ["matru vandana", "pmmvy", "मातृ वंदना", "maternity", "pregnan", "गर्भवती", "garbhvati"],
     "mgnrega": ["mgnrega", "nrega", "manrega", "मनरेगा", "नरेगा", "job card", "जॉब कार्ड"],
     "majhi-ladki-bahin-maharashtra": ["ladki bahin", "ladli behna", "लाडकी बहीण", "लाडकी बहिन", "लाडली बहना", "majhi ladki"],
 }
@@ -82,7 +84,8 @@ SCHEME_ALIASES = {
 
 def _nfc(text: str) -> str:
     # Precomposed nukta letters (e.g. U+095B ज़) decompose under NFC, so both spellings match.
-    return unicodedata.normalize("NFC", text)
+    # Digit-group commas are dropped so "Rs 6,000" and "Rs 6000" become the same token.
+    return re.sub(r"(?<=\d),(?=\d)", "", unicodedata.normalize("NFC", text))
 
 
 def _stem(tok: str) -> str:
